@@ -1,7 +1,10 @@
+import { faList } from '@fortawesome/free-solid-svg-icons'
+
 const menu = [
     {
         title: 'Spending Manager',
-        path: '/spending-manager'
+        path: '/spending-manager',
+        icon: faList
     }
 ]
 
