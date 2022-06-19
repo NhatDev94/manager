@@ -62,24 +62,24 @@ const AddSpending = ({spending, data, rerender, setIsLoading }: Props) => {
         price: money,
         time
     }
-    clear()
+    setPrice('')
     setIsLoading(true)
     
     if (spending?.id !== 0) {
       const res = await SpendingService.editSpending(spending?.id, value, data)
-      res.status === 200 && rerender()
+      res.status === 200 && rerender('edit')
       return
     }
 
     value.id = Math.random()
     const res = await SpendingService.addSpending(value, data)
-    res.status === 200 && rerender()
+    res.status === 200 && rerender('add')
   }
 
   return (
     <div className="">
       <input 
-        className="mb-2 mr-5 outline-none border border-black/20 h-8" 
+        className="mr-5 outline-none border border-black/20 h-8" 
         name="time" 
         type="date" 
         value={time}
@@ -87,7 +87,7 @@ const AddSpending = ({spending, data, rerender, setIsLoading }: Props) => {
       />
 
       <select
-        className="mb-2 mr-5 border-black/20 border outline-none h-8"
+        className="mr-5 border-black/20 border outline-none h-8"
         value={name}
         name="name"
         onChange={handleChange}
@@ -98,11 +98,13 @@ const AddSpending = ({spending, data, rerender, setIsLoading }: Props) => {
         <option value="hangOut">Hang Out</option>
         <option value="oil">Oil</option>
         <option value="house">House</option>
+        <option value="other">Other</option>
         <option value="waste">Waste</option>
+        <option value="Income">Income</option>
       </select>
 
       <select
-        className="mb-2 mr-5 border border-black/20 outline-none h-8"
+        className="mr-5 border border-black/20 outline-none h-8"
         value={status}
         name="status"
         onChange={handleChange}
@@ -113,10 +115,11 @@ const AddSpending = ({spending, data, rerender, setIsLoading }: Props) => {
       </select>
 
       <input
-        className="mb-2 w-[150px] mr-5 p-2 text-sm font-medium border border-black/20 outline-none h-8"
+        className="w-[150px] mr-5 p-2 text-sm font-medium border border-black/20 outline-none h-8"
         name="price"
         value={price}
         onChange={handleChange}
+        onKeyUp={e => e.key === 'Enter' && addSpending()}
         placeholder="Enter Price..."
       />
       <button 

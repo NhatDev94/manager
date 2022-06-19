@@ -7,8 +7,8 @@ interface Props {
 }
 
 const WeekManager = ({ spendings }: Props) => {
-
     const now = new Date()
+    const formatMoney = new Intl.NumberFormat('IN-en')
 
     const getDate = (day: number, month: number, year: number) => new Date(year, month, day)
 
@@ -81,13 +81,16 @@ const WeekManager = ({ spendings }: Props) => {
     }
 
     return (
-        <div className='grid grid-cols-2 gap-5'>
+        <div className='grid grid-cols-2 gap-2'>
             {
                 generateWeek(currentMonth, currentYear).map((week: any, index: number) => {
                     const data: TotalSpending = getSpendingInWeek(week)
                     return data.total === 0 ? null : (
-                        <div className='bg-green-100 rounded shadow p-2' key={index}>
-                            <h2 className='mb-4 font-bold text-sm'>Week {index + 1} - {week.length} day</h2>
+                        <div className='bg-white rounded-md shadow p-2' key={index}>
+                            <div className='mb-4 flex items-center justify-between'>
+                                <h2 className='font-bold text-sm'>{`${moment(week[0]).format('MM/DD/YYYY')} - ${moment(week[week.length - 1]).format('MM/DD/YYYY')}`}</h2>
+                                <p className='text-sm font-bold'>Total: {formatMoney.format(data?.total)}</p>
+                            </div>    
                             <div className='flex items-center'>
                                 <div className='w-3/5'>
                                    <div className='flex items-center mb-2'>
@@ -117,11 +120,11 @@ const WeekManager = ({ spendings }: Props) => {
                                 </div>
                                 <div className='w-2/5'>
                                     <div className='flex items-center mb-5'>
-                                        <span className='mr-5 inline-block w-5 h-5 bg-green-500'></span>
+                                        <span className='mr-5 rounded inline-block w-5 h-5 bg-green-500'></span>
                                         <span className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.good)}</span>
                                     </div>
                                     <div className='flex items-center'>
-                                        <span className='mr-5 inline-block w-5 h-5 bg-red-500'></span>
+                                        <span className='mr-5 rounded inline-block w-5 h-5 bg-orange-500'></span>
                                         <span className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.bad)}</span>
                                     </div>
                                 </div>

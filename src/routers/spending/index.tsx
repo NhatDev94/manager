@@ -6,6 +6,8 @@ import AddSpending from './add-spending'
 import Spin from '../../components/spin'
 
 const Spending = () => {
+    const formatMoney = new Intl.NumberFormat('IN-en')
+
     const [spendings, setSpendings] = useState([])
     const [data, setData] = useState({})
     const [isLoading, setIsLoading] = useState(false)
@@ -29,9 +31,9 @@ const Spending = () => {
         getSpendings()
     }, [])
 
-    const rerender = () => {
+    const rerender = (type: string) => {
         getSpendings()
-        setSpending({
+        type === 'edit' && setSpending({
             id: 0,
             name: '',
             status: '',
@@ -54,21 +56,21 @@ const Spending = () => {
     }
 
     return (
-        <div className='w-full h-[calc(100vh-56px)] p-2 flex bg-white rounded shadow'>
+        <div className='w-full h-[calc(100vh-56px)] flex'>
             {isLoading && <Spin />}
             <div className='w-4/5 h-full pr-2 overflow-y-scroll'>
-                <div className='my-5'>
+                <div className='mb-2 p-3 bg-white rounded-md shadow'>
                     <AddSpending spending={spending} data={data} rerender={rerender} setIsLoading={setIsLoading} />
                 </div>
                 <WeekManager spendings={spendings} />
             </div>
-            <div className='w-1/5 p-2 h-full bg-red-400 relative'>
+            <div className='w-1/5 p-2 h-full bg-white relative shadow rounded-md'>
                 <div className='w-full h-10 p-1 flex items-center justify-between absolute top-0 left-0'>
                     <p className=''>Today</p>
                     <p className=''>Week</p>
                     <p className=''>Month</p>
                 </div>
-                <div className='w-full h-[calc(100%-40px)] py-1 bg-blue-300 px-1 absolute top-10 left-0 overflow-y-scroll'>
+                <div className='w-full h-[calc(100%-40px)] py-1 px-1 absolute top-10 left-0 overflow-y-scroll'>
                     {
                         spendings && spendings?.map((item: ISpending, index) => (
                             <div key={index} className={`mb-1 py-1 px-2 shadow rounded ${item?.status === 'good' ? 'bg-green-100' : 'bg-orange-100'}`}>
@@ -87,7 +89,7 @@ const Spending = () => {
                                 </div>
                                 <div className='mt-1 flex items-center justify-between'>
                                     <p className='capitalize text-xs font-semibold'>{item?.name === 'hangOut' ? 'Hang Out' : item?.name}</p>
-                                    <p className='font-semibold'>{item?.price}</p>
+                                    <p className='font-semibold'>{formatMoney.format(item?.price)}</p>
                                 </div>
                             </div>
                         ))
