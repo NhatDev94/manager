@@ -38,7 +38,7 @@ const Layout = () => {
                 }
             </div>
 
-            <div className={`${mainWidth} relative top-14 ${mainLeftPosition} bg-blue-100 duration-300`}>
+            <div className={`${mainWidth} relative top-14 ${mainLeftPosition} bg-gray-200 duration-300`}>
                 <div className='main min-h-[calc(100vh-56px)] p-2'>
                     <Routers />
                 </div>
