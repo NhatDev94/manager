@@ -1,45 +1,33 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import WeekManager from './week-manager'
 import { ISpending } from '../../interfaces'
+import SpendingService from '../../services'
+import AddSpending from './add-spending'
 
 const Spending = () => {
+    const [spendings, setSpendings] = useState([])
+    const [data, setData] = useState({})
 
-    const spendings: ISpending[] = [
-        {
-            name: 'An Sang',
-            price: 15000,
-            time: '06/01/2022',
-            status: 'good'
-        },
-        {
-            name: 'An Sang',
-            price: 15000,
-            time: '06/12/2022',
-            status: 'good'
-        },
-        {
-            name: 'An Sang',
-            price: 15000,
-            time: '06/26/2022',
-            status: 'good'
-        },
-        {
-            name: 'An Sang',
-            price: 15000,
-            time: '06/26/2021',
-            status: 'good'
-        },
-        {
-            name: 'An Sang',
-            price: 15000,
-            time: '02/26/2022',
-            status: 'good'
-        },
-    ]
+    const getSpendings = useCallback(async () => {
+        const res = await SpendingService.getSpendings()
+        setSpendings(res.spendings)
+        setData(res.data)
+    }, [])
 
+    useEffect(() => {
+        getSpendings()
+    }, [])
+
+    const rerender = async () => {
+        await getSpendings()
+    }
+   
     return (
         <div className='w-full h-[calc(100vh-56px)] p-2 flex bg-white rounded shadow'>
             <div className='w-4/5 h-full pr-2 overflow-y-scroll'>
+                <div className='my-5'>
+                    <AddSpending data={data} rerender={rerender} />
+                </div>
                 <WeekManager spendings={spendings} />
             </div>
             <div className='w-1/5 p-2 h-full bg-red-400 relative'>
@@ -50,7 +38,7 @@ const Spending = () => {
                 </div>
                 <div className='w-full h-[calc(100%-40px)] py-1 bg-blue-300 px-1 absolute top-10 left-0 overflow-y-scroll'>
                     {
-                        spendings?.map((item, index) => (
+                        spendings && spendings?.map((item: ISpending, index) => (
                             <div key={index} className={`mb-1 p-1 shadow rounded ${item?.status === 'good' ? 'bg-green-100' : 'bg-orange-100'}`}>
                                 <div className='flex items-center justify-between'>
                                     <p className=''>{item?.time}</p>
