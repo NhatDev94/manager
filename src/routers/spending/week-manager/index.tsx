@@ -43,9 +43,11 @@ const WeekManager = ({ spendings }: Props) => {
             hangOUt: 0,
             oil: 0,
             waste: 0,
+            house: 0,
             good: 0,
             bad: 0,
-            other: 0
+            other: 0,
+            total: 0
         }
 
         const spendingInYearAndMonth = spendings.filter(item => {
@@ -64,10 +66,12 @@ const WeekManager = ({ spendings }: Props) => {
         })
 
         spendingInWeek.map(item => {
+            totalSpending.total += item.price
             if (item.name === 'food') totalSpending.food += item.price
             if (item.name === 'coffee') totalSpending.coffee += item.price
             if (item.name === 'hangOut') totalSpending.hangOUt += item.price
             if (item.name === 'oil') totalSpending.oil += item.price
+            if (item.name === 'house') totalSpending.house += item.price
             if (item.name === 'waste') totalSpending.waste += item.price
             if (item.status === 'good') totalSpending.good += item.price
             if (item.status ==="bad") totalSpending.bad += item.price
@@ -81,40 +85,44 @@ const WeekManager = ({ spendings }: Props) => {
             {
                 generateWeek(currentMonth, currentYear).map((week: any, index: number) => {
                     const data: TotalSpending = getSpendingInWeek(week)
-                    return (
+                    return data.total === 0 ? null : (
                         <div className='bg-green-100 rounded shadow p-2' key={index}>
-                            <h2 className='mb-2 font-bold text-sm'>Week {index + 1} - {week.length} day</h2>
+                            <h2 className='mb-4 font-bold text-sm'>Week {index + 1} - {week.length} day</h2>
                             <div className='flex items-center'>
                                 <div className='w-3/5'>
                                    <div className='flex items-center mb-2'>
-                                        <p className='min-w-[80px] text-xs font-semibold'>Food</p>
-                                        <p className='text-xs'>{data?.food}</p>
+                                        <p className='min-w-[80px] text-xs'>Food</p>
+                                        <p className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.food)}</p>
                                     </div> 
                                     <div className='flex items-center mb-2'>
-                                        <p className='min-w-[80px] text-xs font-semibold'>Coffee</p>
-                                        <p className='text-xs'>{data?.coffee}</p>
+                                        <p className='min-w-[80px] text-xs'>Coffee</p>
+                                        <p className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.coffee)}</p>
                                     </div> 
                                     <div className='flex items-center mb-2'>
-                                        <p className='min-w-[80px] text-xs font-semibold'>Hang Out</p>
-                                        <p className='text-xs'>{data?.hangOUt}</p>
+                                        <p className='min-w-[80px] text-xs'>Hang Out</p>
+                                        <p className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.hangOUt)}</p>
                                     </div> 
                                     <div className='flex items-center mb-2'>
-                                        <p className='min-w-[80px] text-xs font-semibold'>Oil</p>
-                                        <p className='text-xs'>{data?.oil}</p>
+                                        <p className='min-w-[80px] text-xs'>Oil</p>
+                                        <p className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.oil)}</p>
                                     </div> 
                                     <div className='flex items-center mb-2'>
-                                        <p className='min-w-[80px] text-xs font-semibold'>Other</p>
-                                        <p className='text-xs'>{data?.other}</p>
+                                        <p className='min-w-[80px] text-xs'>House</p>
+                                        <p className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.house)}</p>
+                                    </div> 
+                                    <div className='flex items-center mb-2'>
+                                        <p className='min-w-[80px] text-xs'>Other</p>
+                                        <p className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.other)}</p>
                                     </div> 
                                 </div>
                                 <div className='w-2/5'>
                                     <div className='flex items-center mb-5'>
                                         <span className='mr-5 inline-block w-5 h-5 bg-green-500'></span>
-                                        <span className='text-xs'>{data?.good}</span>
+                                        <span className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.good)}</span>
                                     </div>
                                     <div className='flex items-center'>
                                         <span className='mr-5 inline-block w-5 h-5 bg-red-500'></span>
-                                        <span className='text-xs'>{data?.bad}</span>
+                                        <span className='text-xs font-semibold'>{new Intl.NumberFormat('IN-en').format(data?.bad)}</span>
                                     </div>
                                 </div>
                             </div>

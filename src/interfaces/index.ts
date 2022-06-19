@@ -1,5 +1,5 @@
 export interface ISpending {
-    id?: number,
+    id: number,
     name: string,
     price: number,
     status: string,
@@ -12,7 +12,9 @@ export interface TotalSpending {
     hangOUt: number,
     oil: number,
     waste: number,
+    house: number
     good: number,
     bad: number,
-    other: number
+    other: number,
+    total: 0
 }

@@ -1,25 +1,47 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ISpending } from "../../../interfaces";
 import SpendingService from "../../../services";
 
 interface Props {
   data: any,
-  rerender: any
+  rerender: any,
+  setIsLoading: any, 
+  spending: ISpending
 }
 
-const AddSpending = ({ data, rerender }: Props) => {
+const AddSpending = ({spending, data, rerender, setIsLoading }: Props) => {
   const now = new Date()
+  const format = new Intl.NumberFormat('en-US')
+  
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");
-  const [price, setPrice] = useState("");
   const [time, setTime] = useState(moment(now).format('YYYY/MM/DD'));
+  const [price, setPrice] = useState("");
+
+  useEffect(() => {
+    setName(spending?.name)
+    setStatus(spending?.status)
+    setPrice(spending?.price === 0 ? '' : format.format(spending?.price).replaceAll(',', '.'))
+    setTime(spending?.time)
+  }, [spending])
 
   const handleChange = (e: any) => {
     const target: any = e.target;
     if (target.name === "name") setName(target.value);
     if (target.name === "status") setStatus(target.value);
-    if (target.name === "price") setPrice(target.value);
+    if (target.name === "price") {
+      if (target.value === '') {
+        setPrice('')
+        return
+      }
+      let money = target.value.replaceAll('.', '')
+      if (!Number(money)) return
+      money = Number(money)
+      let string = format.format(money)
+      string = string.replaceAll(',', '.')
+      setPrice(string)
+    }
     if (target.name === "time") setTime(target.value);
   };
 
@@ -32,15 +54,25 @@ const AddSpending = ({ data, rerender }: Props) => {
 
   const addSpending = async () => {
     if (name === '' || status === '' || price === '') return
-    const spending: ISpending = {
-        id: Math.random(),
+    let money = Number(price.replaceAll('.', ''))
+    const value: ISpending = {
+        id: spending?.id,
         name,
         status,
-        price: Number(price),
+        price: money,
         time
     }
     clear()
-    const res = await SpendingService.addSpending(spending, data)
+    setIsLoading(true)
+    
+    if (spending?.id !== 0) {
+      const res = await SpendingService.editSpending(spending?.id, value, data)
+      res.status === 200 && rerender()
+      return
+    }
+
+    value.id = Math.random()
+    const res = await SpendingService.addSpending(value, data)
     res.status === 200 && rerender()
   }
 
@@ -65,6 +97,7 @@ const AddSpending = ({ data, rerender }: Props) => {
         <option value="coffee">Coffe</option>
         <option value="hangOut">Hang Out</option>
         <option value="oil">Oil</option>
+        <option value="house">House</option>
         <option value="waste">Waste</option>
       </select>
 
@@ -80,12 +113,11 @@ const AddSpending = ({ data, rerender }: Props) => {
       </select>
 
       <input
-        className="mb-2 w-[150px] mr-5 p-2 text-sm border border-black/20 outline-none h-8"
+        className="mb-2 w-[150px] mr-5 p-2 text-sm font-medium border border-black/20 outline-none h-8"
         name="price"
         value={price}
         onChange={handleChange}
         placeholder="Enter Price..."
-        type='number'
       />
       <button 
         className="border h-8 text-sm font-semibold border-black/20 px-4 rounded mr-5"
